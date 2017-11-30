@@ -1,0 +1,3 @@
+[submodule "sdk-tester-android"]
+	path = sdk-tester-android
+	url = git@github.com:360dialog/sdk-tester-android.git
