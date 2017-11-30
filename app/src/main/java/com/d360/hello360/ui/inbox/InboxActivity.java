@@ -16,6 +16,9 @@ import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.widget.CoordinatorLayout;
+import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -31,6 +34,9 @@ import android.widget.ListView;
 import android.widget.RadioGroup;
 import android.widget.Toast;
 
+import com.d360.campaigntester.CampaignException;
+import com.d360.campaigntester.Tester;
+import com.d360.campaigntester.campaign.Inbox;
 import com.d360.hello360.R;
 import com.d360.hello360.network.InboxAttachmentDownloader;
 import com.threesixtydialog.sdk.D360;
@@ -77,6 +83,8 @@ public class InboxActivity extends AppCompatActivity implements
 
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+        setupFloatingActionButton();
 
         mFilterReadGroup = findViewById(R.id.filter_read_group);
         mFilterDeletedGroup = findViewById(R.id.filter_deleted_group);
@@ -132,6 +140,25 @@ public class InboxActivity extends AppCompatActivity implements
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    private void setupFloatingActionButton() {
+        FloatingActionButton fab = findViewById(R.id.fab);
+        final CoordinatorLayout layout = findViewById(R.id.coordinator_layout);
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                try {
+                    Inbox inboxCampaign = new Inbox(getApplicationContext());
+                    Tester.getInstance().send(getApplicationContext(), inboxCampaign);
+                } catch (CampaignException e) {
+                    String message = getString(R.string.inbox_send_sample_error);
+                    Snackbar.make(layout, message, Snackbar.LENGTH_SHORT).show();
+                    Log.d(TAG, "Can't send the InboxCampaign. Message: " + e.getMessage());
+                    e.printStackTrace();
+                }
+            }
+        });
     }
 
     protected void fetchInbox() {

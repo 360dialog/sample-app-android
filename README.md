@@ -7,6 +7,10 @@ This sample app is a minimal example demonstrating a proper integration of the 3
 
 1. Clone or download the repository
 
+    ```
+    git clone --recursive git@github.com:360dialog/sample-app-android.git
+    ```
+
 2. Import it in Android Studio 
 
 3. Run and play around 😎
