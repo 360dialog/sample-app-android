@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "184000187186",
+    "firebase_url": "https://hello-360-c5932.firebaseio.com",
+    "project_id": "hello-360-c5932",
+    "storage_bucket": "hello-360-c5932.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:184000187186:android:6d69d05cf31e116e",
+        "android_client_info": {
+          "package_name": "com.d360.hello360"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "184000187186-d5rsuiqfevk7hjkvfd6mjj72cpmffihm.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAWkDEEeyBUB1710HNpkJ0KNvJjNgAxgmk"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

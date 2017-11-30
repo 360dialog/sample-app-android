@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ Created by Wojciech Kukiełczak
+  ~ Copyright (c) 2017 360dialog. All rights reserved.
+  ~
+  ~ Last modified 11/23/17 4:04 PM
+  -->
+
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <group
+        android:id="@+id/inbox_menu_group_state">
+        <item
+            android:id="@+id/inbox_item_menu_read"
+            android:title="@string/inbox_item_menu_read"
+            app:showAsAction="ifRoom" />
+
+        <item
+            android:id="@+id/inbox_item_menu_unread"
+            android:title="@string/inbox_item_menu_unread"
+            app:showAsAction="ifRoom" />
+
+        <item
+            android:id="@+id/inbox_item_menu_delete"
+            android:title="@string/inbox_item_menu_delete"
+            app:showAsAction="ifRoom" />
+
+        <item
+            android:id="@+id/inbox_item_menu_undelete"
+            android:title="@string/inbox_item_menu_undelete"
+            app:showAsAction="ifRoom" />
+    </group>
+
+    <group
+        android:id="@+id/inbox_menu_group_purge">
+        <item
+            android:id="@+id/inbox_item_menu_delete_forever"
+            android:title="@string/inbox_item_menu_delete_forever"
+            app:showAsAction="ifRoom" />
+    </group>
+
+    <group
+        android:id="@+id/inbox_menu_group_selection">
+        <item
+            android:id="@+id/inbox_item_menu_deselect"
+            android:title="@string/inbox_item_menu_deselect"
+            app:showAsAction="never" />
+    </group>
+
+</menu>

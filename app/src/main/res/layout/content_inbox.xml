@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ Created by Wojciech Kukiełczak
+  ~ Copyright (c) 2017 360dialog. All rights reserved.
+  ~
+  ~ Last modified 11/30/17 11:04 AM
+  -->
+
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior"
+    tools:context="com.d360.hello360.ui.inbox.InboxActivity"
+    tools:showIn="@layout/activity_inbox">
+
+    <LinearLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"
+        tools:context="com.d360.hello360.ui.inbox.InboxActivity"
+        tools:showIn="@layout/activity_inbox"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:paddingTop="6dp"
+            android:paddingBottom="6dp"
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <info.hoang8f.android.segmented.SegmentedGroup
+                xmlns:segmentedgroup="http://schemas.android.com/apk/res-auto"
+                android:id="@+id/filter_read_group"
+                android:layout_gravity="center"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_margin="3dp"
+                segmentedgroup:sc_border_width="2dp"
+                segmentedgroup:sc_corner_radius="10dp">
+
+                <RadioButton
+                    android:id="@+id/filter_read_any"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/inbox_filter_read_any"
+                    android:textColor="@color/white"
+                    style="@style/RadioButton"/>
+
+                <RadioButton
+                    android:id="@+id/filter_read_read"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/inbox_filter_read_read"
+                    android:textColor="@color/white"
+                    style="@style/RadioButton" />
+
+                <RadioButton
+                    android:id="@+id/filter_read_unread"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/inbox_filter_read_unread"
+                    android:textColor="@color/white"
+                    style="@style/RadioButton" />
+
+            </info.hoang8f.android.segmented.SegmentedGroup>
+
+            <info.hoang8f.android.segmented.SegmentedGroup
+                xmlns:segmentedgroup="http://schemas.android.com/apk/res-auto"
+                android:id="@+id/filter_deleted_group"
+                android:layout_gravity="center"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_margin="3dp"
+                segmentedgroup:sc_border_width="2dp"
+                segmentedgroup:sc_corner_radius="10dp">
+
+                <RadioButton
+                    android:id="@+id/filter_deleted_any"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/inbox_filter_deleted_any"
+                    android:textColor="@color/white"
+                    style="@style/RadioButton" />
+
+                <RadioButton
+                    android:id="@+id/filter_deleted_deleted"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/inbox_filter_deleted_deleted"
+                    android:textColor="@color/white"
+                    style="@style/RadioButton" />
+
+                <RadioButton
+                    android:id="@+id/filter_deleted_inbox"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/inbox_filter_deleted_not_deleted"
+                    android:textColor="@color/white"
+                    style="@style/RadioButton" />
+
+            </info.hoang8f.android.segmented.SegmentedGroup>
+
+        </LinearLayout>
+
+        <ListView
+            android:id="@+id/inbox_messages"
+            android:layout_margin="2dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+        </ListView>
+
+    </LinearLayout>
+
+</android.support.constraint.ConstraintLayout>

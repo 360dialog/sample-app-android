@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ Created by Wojciech Kukiełczak
+  ~ Copyright (c) 2017 360dialog. All rights reserved.
+  ~
+  ~ Last modified 11/27/17 2:45 PM
+  -->
+
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/action_select_all"
+        android:title="@string/general_select_all" />
+</menu>

@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ Created by Wojciech Kukiełczak
+  ~ Copyright (c) 2017 360dialog. All rights reserved.
+  ~
+  ~ Last modified 11/30/17 11:04 AM
+  -->
+
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    package="com.d360.hello360">
+
+    <uses-permission android:name="android.permission.INTERNET" />
+
+    <application
+        android:name=".Hello360"
+        android:allowBackup="true"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:supportsRtl="true"
+        android:networkSecurityConfig="@xml/net_cfg"
+        android:theme="@style/AppTheme"
+        tools:targetApi="n">
+
+        <!--
+            This is a notification small icon. It's a good practice to set the default one for each
+            of your notifications.
+        -->
+        <meta-data
+            android:name="com.threesixtydialog.sdk.notification_icon"
+            android:resource="@mipmap/ic_stat_360dialog" />
+
+        <activity
+            android:label="@string/inbox_service"
+            android:name=".ui.inbox.InboxActivity"
+            android:theme="@style/AppTheme.NoActionBar">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
+        <service android:name=".network.InboxAttachmentDownloader" />
+    </application>
+
+</manifest>

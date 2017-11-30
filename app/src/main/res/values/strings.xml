@@ -1,0 +1,51 @@
+<!--
+  ~ Created by Wojciech Kukiełczak
+  ~ Copyright (c) 2017 360dialog. All rights reserved.
+  ~
+  ~ Last modified 11/30/17 11:04 AM
+  -->
+
+<resources>
+    <string name="app_name">Hello 360</string>
+
+    <string name="title_activity_inbox">Inbox</string>
+
+    <string name="app_notification_channel_default_name">360 General notifications</string>
+    <string name="app_notification_channel_default_description">Default channel to display notifications</string>
+
+    <string name="general_placeholder">Loading</string>
+    <string name="general_settings">settings</string>
+    <string name="general_select_all">select all</string>
+    <string name="general_ok">OK</string>
+    <string name="general_cancel">Cancel</string>
+
+    <string name="campaign_unable_to_send">Internal error occurred. Unable to send a campaign</string>
+    <string name="campaign_sending">Sending campaign</string>
+
+    <string name="inbox_service">Inbox Service</string>
+    <string name="inbox_item_attachment_content_description">An inbox attachment image</string>
+
+    <string name="inbox_filter_read_any">Any</string>
+    <string name="inbox_filter_read_read">Read</string>
+    <string name="inbox_filter_read_unread">Unread</string>
+    <string name="inbox_filter_deleted_any">Any</string>
+    <string name="inbox_filter_deleted_deleted">Deleted</string>
+    <string name="inbox_filter_deleted_not_deleted">Inbox</string>
+
+    <string name="inbox_item_menu_read">set read</string>
+    <string name="inbox_item_menu_unread">set unread</string>
+    <string name="inbox_item_menu_delete">delete</string>
+    <string name="inbox_item_menu_undelete">restore</string>
+    <string name="inbox_item_menu_delete_forever">delete forever</string>
+
+    <string name="inbox_item_dialog_delete_title">Attention!</string>
+    <string name="inbox_item_dialog_delete_message">This will remove the message from the store. This operation can\'t be reverted! Are you sure?</string>
+
+    <string name="inbox_item_menu_deselect">deselect</string>
+    <plurals name="inbox_list_messages_selected">
+        <item quantity="one">%d message selected</item>
+        <item quantity="few">%d messages selected</item>
+        <item quantity="other">%d messages selected</item>
+    </plurals>
+    <string name="title_activity_main">MainActivity</string>
+</resources>

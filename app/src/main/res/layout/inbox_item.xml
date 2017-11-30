@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ Created by Wojciech Kukiełczak
+  ~ Copyright (c) 2017 360dialog. All rights reserved.
+  ~
+  ~ Last modified 11/27/17 3:38 PM
+  -->
+
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="horizontal"
+    android:weightSum="10"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="5dp"
+    android:background="?android:attr/activatedBackgroundIndicator">
+
+    <View
+        android:id="@+id/unread_indicator"
+        android:layout_width="3dp"
+        android:layout_height="fill_parent"
+        android:background="@color/colorAccent" />
+
+    <ImageView
+        android:id="@+id/attachment"
+        android:layout_weight="1"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_margin="5dp"
+        android:contentDescription="@string/inbox_item_attachment_content_description"/>
+
+    <LinearLayout
+        android:id="@+id/inbox_content"
+        android:layout_weight="8"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/general_placeholder"
+                android:textStyle="bold" />
+
+            <TextView
+                android:layout_weight="1"
+                android:id="@+id/received_date"
+                android:text="@string/general_placeholder"
+                android:gravity="end"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/body"
+            android:text="@string/general_placeholder"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+    </LinearLayout>
+
+</LinearLayout>
