@@ -32,11 +32,12 @@ import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.RadioGroup;
-import android.widget.Toast;
 
 import com.d360.campaigntester.CampaignException;
 import com.d360.campaigntester.Tester;
+import com.d360.campaigntester.campaign.InApp;
 import com.d360.campaigntester.campaign.Inbox;
+import com.d360.campaigntester.campaign.Notification;
 import com.d360.hello360.R;
 import com.d360.hello360.network.InboxAttachmentDownloader;
 import com.threesixtydialog.sdk.D360;
@@ -67,9 +68,17 @@ public class InboxActivity extends AppCompatActivity implements
     private InboxArrayAdapter mInboxArrayAdapter;
     private List<InboxMessageViewHolder> mMessages = new ArrayList<>();
     private ActionMode mActionMode = null;
+    private CoordinatorLayout mCoordinatorLayout;
 
     private RadioGroup mFilterReadGroup;
     private RadioGroup mFilterDeletedGroup;
+
+    private boolean isFabOpen;
+    private FloatingActionButton mFabMain;
+    private FloatingActionButton mFabInapp;
+    private FloatingActionButton mFabNotification;
+    private FloatingActionButton mFabInbox;
+    private View mFabMenuBg;
 
     /**
      * Start with default filter set
@@ -80,6 +89,8 @@ public class InboxActivity extends AppCompatActivity implements
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_inbox);
+
+        mCoordinatorLayout = findViewById(R.id.coordinator_layout);
 
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -142,23 +153,134 @@ public class InboxActivity extends AppCompatActivity implements
         return super.onOptionsItemSelected(item);
     }
 
+    /**
+     * Setup Floating Action Button and it's menu
+     */
     private void setupFloatingActionButton() {
-        FloatingActionButton fab = findViewById(R.id.fab);
-        final CoordinatorLayout layout = findViewById(R.id.coordinator_layout);
-        fab.setOnClickListener(new View.OnClickListener() {
+        mFabMain = findViewById(R.id.fab);
+        mFabInapp = findViewById(R.id.fab_inapp);
+        mFabNotification = findViewById(R.id.fab_notification);
+        mFabInbox = findViewById(R.id.fab_inbox);
+        mFabMenuBg = findViewById(R.id.fab_menu_background);
+
+        mFabMain.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if (!isFabOpen) {
+                    showFabMenu();
+                } else {
+                    closeFabMenu();
+                }
+            }
+        });
+
+        mFabInapp.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                closeFabMenu();
+                try {
+                    InApp inappCampaign = new InApp(getApplicationContext());
+                    Tester.getInstance().send(getApplicationContext(), inappCampaign);
+                } catch (CampaignException e) {
+                    String message = getString(R.string.inbox_send_sample_error);
+                    Snackbar.make(mCoordinatorLayout, message, Snackbar.LENGTH_SHORT).show();
+                    Log.d(TAG, "Can't send the InApp campaign. Message: " + e.getMessage());
+                    e.printStackTrace();
+                }
+            }
+        });
+
+        mFabNotification.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                closeFabMenu();
+                try {
+                    Notification notificationCampaign = new Notification(getApplicationContext());
+                    Tester.getInstance().send(getApplicationContext(), notificationCampaign);
+                } catch (CampaignException e) {
+                    String message = getString(R.string.inbox_send_sample_error);
+                    Snackbar.make(mCoordinatorLayout, message, Snackbar.LENGTH_SHORT).show();
+                    Log.d(TAG, "Can't send the Notification campaign. Message: " + e.getMessage());
+                    e.printStackTrace();
+                }
+            }
+        });
+
+        mFabInbox.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                closeFabMenu();
                 try {
                     Inbox inboxCampaign = new Inbox(getApplicationContext());
                     Tester.getInstance().send(getApplicationContext(), inboxCampaign);
                 } catch (CampaignException e) {
                     String message = getString(R.string.inbox_send_sample_error);
-                    Snackbar.make(layout, message, Snackbar.LENGTH_SHORT).show();
-                    Log.d(TAG, "Can't send the InboxCampaign. Message: " + e.getMessage());
+                    Snackbar.make(mCoordinatorLayout, message, Snackbar.LENGTH_SHORT).show();
+                    Log.d(TAG, "Can't send the Inbox campaign. Message: " + e.getMessage());
                     e.printStackTrace();
                 }
             }
         });
+
+        mFabMenuBg.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                closeFabMenu();
+            }
+        });
+    }
+
+    /**
+     * Helper to show Floating Action Bar menu
+     */
+    private void showFabMenu() {
+        isFabOpen = true;
+
+        mFabInapp.setVisibility(View.VISIBLE);
+        mFabInbox.setVisibility(View.VISIBLE);
+        mFabNotification.setVisibility(View.VISIBLE);
+
+        mFabMain.animate().rotation(135f);
+
+        mFabMenuBg.setVisibility(View.VISIBLE);
+        mFabMenuBg.animate().alpha(1f);
+
+        mFabInapp.animate()
+                .translationY(-getResources().getDimension(R.dimen.standard_55))
+                .rotation(0f);
+
+        mFabNotification.animate()
+                .translationY(-getResources().getDimension(R.dimen.standard_100))
+                .rotation(0f);
+
+        mFabInbox.animate()
+                .translationY(-getResources().getDimension(R.dimen.standard_145))
+                .rotation(0f);
+
+    }
+
+    /**
+     * Helper to hide Floating Action Bar menu
+     */
+    private void closeFabMenu() {
+        isFabOpen = false;
+
+        mFabMain.animate().rotation(0f);
+
+        mFabMenuBg.setVisibility(View.GONE);
+        mFabMenuBg.animate().alpha(0f);
+
+        mFabInapp.animate()
+                .translationY(0f)
+                .rotation(90f);
+
+        mFabNotification.animate()
+                .translationY(0f)
+                .rotation(90f);
+
+        mFabInbox.animate()
+                .translationY(0f)
+                .rotation(90f);
     }
 
     protected void fetchInbox() {
@@ -265,11 +387,14 @@ public class InboxActivity extends AppCompatActivity implements
 
     @Override
     public void onError() {
-        Toast.makeText(
-                this,
-                "Can't fetch the inbox now. Try again later",
-                Toast.LENGTH_SHORT
-        ).show();
+        Snackbar
+                .make(
+                        mCoordinatorLayout,
+                        "Can't fetch the inbox now. Try again later",
+                        Snackbar.LENGTH_SHORT
+                )
+                .show();
+
     }
 
     /*
@@ -301,14 +426,19 @@ public class InboxActivity extends AppCompatActivity implements
 
         if (message == null) return;
 
+        // Set message as read when it's clicked
+        D360.inbox().updateMessageAsRead(message, true, this);
+
         if (message.isExecutable()) {
             D360.inbox().executeMessage(message, this);
         } else {
-            Toast.makeText(
-                    this,
-                    "This message is not executable",
-                    Toast.LENGTH_SHORT
-            ).show();
+            Snackbar
+                    .make(
+                            mCoordinatorLayout,
+                            "This message is not executable",
+                            Snackbar.LENGTH_SHORT
+                    )
+                    .show();
         }
     }
 
@@ -360,22 +490,24 @@ public class InboxActivity extends AppCompatActivity implements
             }
         }
 
-        clearList();
-
         switch (item.getItemId()) {
             case R.id.inbox_item_menu_read:
+                clearList();
                 D360.inbox().updateMessagesAsRead(messages, true, this);
                 break;
 
             case R.id.inbox_item_menu_unread:
+                clearList();
                 D360.inbox().updateMessagesAsRead(messages, false, this);
                 break;
 
             case R.id.inbox_item_menu_delete:
+                clearList();
                 D360.inbox().updateMessagesAsDeleted(messages, true, this);
                 break;
 
             case R.id.inbox_item_menu_undelete:
+                clearList();
                 D360.inbox().updateMessagesAsDeleted(messages, false, this);
                 break;
 
@@ -386,6 +518,7 @@ public class InboxActivity extends AppCompatActivity implements
                         .setPositiveButton(R.string.general_ok, new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
+                                clearList();
                                 D360.inbox().removeMessages(messages, InboxActivity.this);
                             }
                         })
