@@ -8,7 +8,6 @@
 package com.d360.hello360.ui.inbox;
 
 import android.content.Context;
-import android.graphics.Bitmap;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.SparseBooleanArray;
@@ -20,11 +19,9 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.d360.hello360.R;
+import com.squareup.picasso.Picasso;
 import com.threesixtydialog.sdk.D360InboxMessage;
 
-import org.ocpsoft.prettytime.PrettyTime;
-
-import java.util.Date;
 import java.util.List;
 
 public class InboxArrayAdapter extends ArrayAdapter<InboxMessageViewHolder> {
@@ -53,8 +50,7 @@ public class InboxArrayAdapter extends ArrayAdapter<InboxMessageViewHolder> {
         setRead(view, message);
         setTitle(view, message.getTitle());
         setBody(view, message.getBody());
-        setReceivedAt(view, message.getDate());
-        setAttachment(view, viewHolder.getAttachmentBitmap());
+        setAttachment(view, message);
 
         return view;
     }
@@ -106,21 +102,15 @@ public class InboxArrayAdapter extends ArrayAdapter<InboxMessageViewHolder> {
         }
     }
 
-    private void setReceivedAt(View view, long date) {
-        if (view == null) return;
-
-        TextView receivedAtTv = view.findViewById(R.id.received_date);
-        if (receivedAtTv != null) {
-            receivedAtTv.setText(new PrettyTime().format(new Date(date)));
-        }
-    }
-
-    private void setAttachment(View view, Bitmap bitmap) {
-        if (view == null) return;
-
+    private void setAttachment(View view, D360InboxMessage message) {
+        if (message.getAttachment() == null || message.getAttachment().getUrl() == null) return;
         ImageView attachmentImageView = view.findViewById(R.id.attachment);
+
         if (attachmentImageView != null) {
-            attachmentImageView.setImageBitmap(bitmap);
+            Picasso
+                    .with(getContext())
+                    .load(message.getAttachment().getUrl().toString())
+                    .into(attachmentImageView);
         }
     }
 

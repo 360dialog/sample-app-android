@@ -36,9 +36,8 @@ dependencies {
     implementation 'com.android.support:recyclerview-v7:26.1.0'
     implementation 'com.android.support:design:26.1.0'
 
-    implementation 'com.squareup.okhttp3:okhttp:3.9.0'
     implementation 'info.hoang8f:android-segmented:1.0.6'
-    implementation 'org.ocpsoft.prettytime:prettytime:3.2.7.Final'
+    implementation 'com.squareup.picasso:picasso:2.5.2'
 
     implementation project(':sdk-tester-android')
 

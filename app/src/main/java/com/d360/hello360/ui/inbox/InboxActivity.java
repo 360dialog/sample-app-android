@@ -39,7 +39,6 @@ import com.d360.campaigntester.campaign.InApp;
 import com.d360.campaigntester.campaign.Inbox;
 import com.d360.campaigntester.campaign.Notification;
 import com.d360.hello360.R;
-import com.d360.hello360.network.InboxAttachmentDownloader;
 import com.threesixtydialog.sdk.D360;
 import com.threesixtydialog.sdk.D360InboxFetchRequest;
 import com.threesixtydialog.sdk.D360InboxMessage;
@@ -364,14 +363,6 @@ public class InboxActivity extends AppCompatActivity implements
         for (D360InboxMessage inboxMessage : list) {
             InboxMessageViewHolder message = new InboxMessageViewHolder(inboxMessage);
             mMessages.add(message);
-            // new DownloadImageTask(message, mInboxArrayAdapter).execute();
-
-            Intent intent = new Intent(this, InboxAttachmentDownloader.class);
-            intent.setAction(InboxAttachmentDownloader.ACTION);
-            intent.putExtra(INBOX_EXTRA_VIEW_HOLDER_ID, message.getId());
-            intent.putExtra(INBOX_EXTRA_MESSAGE, inboxMessage);
-
-            startService(intent);
         }
 
         // Reset view if there was selection made on the list
