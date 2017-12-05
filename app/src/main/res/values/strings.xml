@@ -13,6 +13,10 @@
     <string name="app_notification_channel_default_name">360 General notifications</string>
     <string name="app_notification_channel_default_description">Default channel to display notifications</string>
 
+    <string name="inbox_fab_inapp">Send InApp</string>
+    <string name="inbox_fab_notification">Send notification</string>
+    <string name="inbox_fab_inbox">Send inbox</string>
+
     <string name="general_placeholder">Loading</string>
     <string name="general_settings">settings</string>
     <string name="general_select_all">select all</string>

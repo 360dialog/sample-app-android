@@ -17,7 +17,6 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.CoordinatorLayout;
-import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -39,6 +38,8 @@ import com.d360.campaigntester.campaign.InApp;
 import com.d360.campaigntester.campaign.Inbox;
 import com.d360.campaigntester.campaign.Notification;
 import com.d360.hello360.R;
+import com.github.clans.fab.FloatingActionButton;
+import com.github.clans.fab.FloatingActionMenu;
 import com.threesixtydialog.sdk.D360;
 import com.threesixtydialog.sdk.D360InboxFetchRequest;
 import com.threesixtydialog.sdk.D360InboxMessage;
@@ -72,12 +73,7 @@ public class InboxActivity extends AppCompatActivity implements
     private RadioGroup mFilterReadGroup;
     private RadioGroup mFilterDeletedGroup;
 
-    private boolean isFabOpen;
-    private FloatingActionButton mFabMain;
-    private FloatingActionButton mFabInapp;
-    private FloatingActionButton mFabNotification;
-    private FloatingActionButton mFabInbox;
-    private View mFabMenuBg;
+    private FloatingActionMenu mFabMenu;
 
     /**
      * Start with default filter set
@@ -94,7 +90,7 @@ public class InboxActivity extends AppCompatActivity implements
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        setupFloatingActionButton();
+        setupFloatingActionButtons();
 
         mFilterReadGroup = findViewById(R.id.filter_read_group);
         mFilterDeletedGroup = findViewById(R.id.filter_deleted_group);
@@ -153,30 +149,19 @@ public class InboxActivity extends AppCompatActivity implements
     }
 
     /**
-     * Setup Floating Action Button and it's menu
+     * Floating action menu and it's buttons setup
      */
-    private void setupFloatingActionButton() {
-        mFabMain = findViewById(R.id.fab);
-        mFabInapp = findViewById(R.id.fab_inapp);
-        mFabNotification = findViewById(R.id.fab_notification);
-        mFabInbox = findViewById(R.id.fab_inbox);
-        mFabMenuBg = findViewById(R.id.fab_menu_background);
+    private void setupFloatingActionButtons() {
+        FloatingActionButton fabInapp = findViewById(R.id.fab_inapp);
+        FloatingActionButton fabInbox = findViewById(R.id.fab_inbox);
+        FloatingActionButton fabNotification = findViewById(R.id.fab_notification);
 
-        mFabMain.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (!isFabOpen) {
-                    showFabMenu();
-                } else {
-                    closeFabMenu();
-                }
-            }
-        });
+        mFabMenu = findViewById(R.id.fab_menu);
 
-        mFabInapp.setOnClickListener(new View.OnClickListener() {
+        fabInapp.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
-                closeFabMenu();
+            public void onClick(View view) {
+                mFabMenu.close(true);
                 try {
                     InApp inappCampaign = new InApp(getApplicationContext());
                     Tester.getInstance().send(getApplicationContext(), inappCampaign);
@@ -189,10 +174,10 @@ public class InboxActivity extends AppCompatActivity implements
             }
         });
 
-        mFabNotification.setOnClickListener(new View.OnClickListener() {
+        fabNotification.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
-                closeFabMenu();
+            public void onClick(View view) {
+                mFabMenu.close(true);
                 try {
                     Notification notificationCampaign = new Notification(getApplicationContext());
                     Tester.getInstance().send(getApplicationContext(), notificationCampaign);
@@ -205,10 +190,10 @@ public class InboxActivity extends AppCompatActivity implements
             }
         });
 
-        mFabInbox.setOnClickListener(new View.OnClickListener() {
+        fabInbox.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
-                closeFabMenu();
+            public void onClick(View view) {
+                mFabMenu.close(true);
                 try {
                     Inbox inboxCampaign = new Inbox(getApplicationContext());
                     Tester.getInstance().send(getApplicationContext(), inboxCampaign);
@@ -220,66 +205,6 @@ public class InboxActivity extends AppCompatActivity implements
                 }
             }
         });
-
-        mFabMenuBg.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                closeFabMenu();
-            }
-        });
-    }
-
-    /**
-     * Helper to show Floating Action Bar menu
-     */
-    private void showFabMenu() {
-        isFabOpen = true;
-
-        mFabInapp.setVisibility(View.VISIBLE);
-        mFabInbox.setVisibility(View.VISIBLE);
-        mFabNotification.setVisibility(View.VISIBLE);
-
-        mFabMain.animate().rotation(135f);
-
-        mFabMenuBg.setVisibility(View.VISIBLE);
-        mFabMenuBg.animate().alpha(1f);
-
-        mFabInapp.animate()
-                .translationY(-getResources().getDimension(R.dimen.standard_55))
-                .rotation(0f);
-
-        mFabNotification.animate()
-                .translationY(-getResources().getDimension(R.dimen.standard_100))
-                .rotation(0f);
-
-        mFabInbox.animate()
-                .translationY(-getResources().getDimension(R.dimen.standard_145))
-                .rotation(0f);
-
-    }
-
-    /**
-     * Helper to hide Floating Action Bar menu
-     */
-    private void closeFabMenu() {
-        isFabOpen = false;
-
-        mFabMain.animate().rotation(0f);
-
-        mFabMenuBg.setVisibility(View.GONE);
-        mFabMenuBg.animate().alpha(0f);
-
-        mFabInapp.animate()
-                .translationY(0f)
-                .rotation(90f);
-
-        mFabNotification.animate()
-                .translationY(0f)
-                .rotation(90f);
-
-        mFabInbox.animate()
-                .translationY(0f)
-                .rotation(90f);
     }
 
     protected void fetchInbox() {
