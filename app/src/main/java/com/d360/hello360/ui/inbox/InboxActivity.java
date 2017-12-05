@@ -57,12 +57,9 @@ public class InboxActivity extends AppCompatActivity implements
         AbsListView.MultiChoiceModeListener {
 
     public static final String INBOX_ACTION_UPDATE = "update";
-    public static final String INBOX_ACTION_UPDATE_IMAGE = "update.image";
     public static final String INBOX_ACTION_REMOVE = "remove";
     public static final String INBOX_EXTRA_MESSAGE = "message";
     public static final String INBOX_EXTRA_MESSAGES = "messages";
-    public static final String INBOX_EXTRA_BITMAP = "bitmap";
-    public static final String INBOX_EXTRA_VIEW_HOLDER_ID = "viewholder.id";
 
     private ListView mListView;
     private InboxArrayAdapter mInboxArrayAdapter;
@@ -117,7 +114,6 @@ public class InboxActivity extends AppCompatActivity implements
         IntentFilter intentFilter = new IntentFilter();
         intentFilter.addAction(INBOX_ACTION_UPDATE);
         intentFilter.addAction(INBOX_ACTION_REMOVE);
-        intentFilter.addAction(INBOX_ACTION_UPDATE_IMAGE);
         registerReceiver(mBroadcastReceiver, intentFilter);
     }
 
@@ -232,43 +228,6 @@ public class InboxActivity extends AppCompatActivity implements
 
             if (action.equals(INBOX_ACTION_UPDATE) || action.equals(INBOX_ACTION_REMOVE)) {
                 fetchInbox();
-            } else if (action.equals(INBOX_ACTION_UPDATE_IMAGE)) {
-                setBitmap(intent);
-            }
-        }
-
-        /**
-         * Set just downloaded bitmap attachment for InboxMessage
-         *
-         * @param intent Intent
-         */
-        public void setBitmap(Intent intent) {
-            byte[] rawBitmap = intent.getByteArrayExtra(INBOX_EXTRA_BITMAP);
-            String viewHolderId = intent.getStringExtra(INBOX_EXTRA_VIEW_HOLDER_ID);
-
-            InboxMessageViewHolder viewHolder = null;
-            for (InboxMessageViewHolder vh : mMessages) {
-                if (vh.getId().equals(viewHolderId)) {
-                    viewHolder = vh;
-                    break;
-                }
-            }
-
-            if (viewHolder == null) {
-                Log.d(TAG, "No view holder has been found");
-                return;
-            }
-
-            if (rawBitmap != null) {
-                Log.d(TAG, "Attachment for \"" +
-                        viewHolder.getInboxMessage().getTitle() +
-                        "\" downloaded. Applying!"
-                );
-                int offset = 0;
-                int length = rawBitmap.length;
-
-                viewHolder.setAttachmentBitmap(BitmapFactory.decodeByteArray(rawBitmap, offset, length));
-                mInboxArrayAdapter.notifyDataSetChanged();
             }
         }
     };

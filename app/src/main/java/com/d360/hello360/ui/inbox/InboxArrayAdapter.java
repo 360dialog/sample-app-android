@@ -103,7 +103,7 @@ public class InboxArrayAdapter extends ArrayAdapter<InboxMessageViewHolder> {
     }
 
     private void setAttachment(View view, D360InboxMessage message) {
-        if (message.getAttachment() == null || message.getAttachment().getUrl() == null) return;
+        if (message.getAttachment() == null) return;
         ImageView attachmentImageView = view.findViewById(R.id.attachment);
 
         if (attachmentImageView != null) {
