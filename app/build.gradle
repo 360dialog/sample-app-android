@@ -42,10 +42,15 @@ dependencies {
 
     implementation project(':sdk-tester-android')
 
+    implementation 'com.google.android.gms:play-services-base:11.+'
+    implementation 'com.google.firebase:firebase-messaging:11.+'
+
     // ================= 360 dialog dependencies =================
     implementation 'com.github.360dialog:sdk-android:3.8.1'
     // Additional module to enable push notifications out of the box:
-    implementation 'com.github.360dialog:android-fcm-compat:3.8.1'
+    implementation('com.github.360dialog:android-fcm-compat:3.8.1') {
+        exclude group: 'com.google.firebase'
+    }
     // END: 360dialog dependencies
 
     testImplementation 'junit:junit:4.12'
