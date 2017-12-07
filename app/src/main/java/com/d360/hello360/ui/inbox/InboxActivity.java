@@ -12,7 +12,6 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -37,6 +36,9 @@ import com.d360.campaigntester.Tester;
 import com.d360.campaigntester.campaign.InApp;
 import com.d360.campaigntester.campaign.Inbox;
 import com.d360.campaigntester.campaign.Notification;
+import com.d360.campaigntester.campaign.action.InAppAction;
+import com.d360.campaigntester.campaign.action.UrlAction;
+import com.d360.hello360.Hello360;
 import com.d360.hello360.R;
 import com.github.clans.fab.FloatingActionButton;
 import com.github.clans.fab.FloatingActionMenu;
@@ -44,6 +46,8 @@ import com.threesixtydialog.sdk.D360;
 import com.threesixtydialog.sdk.D360InboxFetchRequest;
 import com.threesixtydialog.sdk.D360InboxMessage;
 import com.threesixtydialog.sdk.D360InboxService;
+
+import org.json.JSONException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -162,7 +166,7 @@ public class InboxActivity extends AppCompatActivity implements
                     InApp inappCampaign = new InApp(getApplicationContext());
                     Tester.getInstance().send(getApplicationContext(), inappCampaign);
                 } catch (CampaignException e) {
-                    String message = getString(R.string.inbox_send_sample_error);
+                    String message = getString(R.string.campaign_error, "InApp");
                     Snackbar.make(mCoordinatorLayout, message, Snackbar.LENGTH_SHORT).show();
                     Log.d(TAG, "Can't send the InApp campaign. Message: " + e.getMessage());
                     e.printStackTrace();
@@ -175,10 +179,22 @@ public class InboxActivity extends AppCompatActivity implements
             public void onClick(View view) {
                 mFabMenu.close(true);
                 try {
-                    Notification notificationCampaign = new Notification(getApplicationContext());
-                    Tester.getInstance().send(getApplicationContext(), notificationCampaign);
-                } catch (CampaignException e) {
-                    String message = getString(R.string.inbox_send_sample_error);
+                    UrlAction openUrl = new UrlAction("http://www.google.com/search?q=macarons");
+
+                    Notification notification = new Notification();
+                    notification
+                            .setChannelId(Hello360.NOTIFICATION_CHANNEL_DEFAULT)
+                            .setTitle("Hi 👋")
+                            .setBody("Tap to open a URL")
+                            .setLargeIconUrl("https://inapp-samples.s3.amazonaws.com/examples/JPG/desertsmall.jpg")
+                            .setBigPictureUrl("http://1.bp.blogspot.com/-VWYdCzYXGjo/VazZ_-DFAGI/AAAAAAAAEx0/ZJd4csDslPQ/s1600/20150720_094211%2528edited%2529.jpg")
+                            .setRichText("Tap to open a URL")
+                            .allowNotificationWhenAppIsInForeground(true)
+                            .setAction(openUrl)
+                    ;
+                    Tester.getInstance().send(getApplicationContext(), notification);
+                } catch (CampaignException | JSONException e) {
+                    String message = getString(R.string.campaign_error, "Notification");
                     Snackbar.make(mCoordinatorLayout, message, Snackbar.LENGTH_SHORT).show();
                     Log.d(TAG, "Can't send the Notification campaign. Message: " + e.getMessage());
                     e.printStackTrace();
@@ -191,10 +207,16 @@ public class InboxActivity extends AppCompatActivity implements
             public void onClick(View view) {
                 mFabMenu.close(true);
                 try {
+                    InAppAction action = new InAppAction("", InAppAction.Button.DARK);
+
                     Inbox inboxCampaign = new Inbox(getApplicationContext());
+                    inboxCampaign
+                            .setAttachmentUrl("https://inapp-samples.s3.amazonaws.com/examples/JPG/desertsmall.jpg")
+                            .setAction(action)
+                    ;
                     Tester.getInstance().send(getApplicationContext(), inboxCampaign);
-                } catch (CampaignException e) {
-                    String message = getString(R.string.inbox_send_sample_error);
+                } catch (CampaignException | JSONException e) {
+                    String message = getString(R.string.campaign_error, "Inbox");
                     Snackbar.make(mCoordinatorLayout, message, Snackbar.LENGTH_SHORT).show();
                     Log.d(TAG, "Can't send the Inbox campaign. Message: " + e.getMessage());
                     e.printStackTrace();

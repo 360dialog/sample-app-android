@@ -8,25 +8,20 @@
 <resources>
     <string name="app_name">Hello 360</string>
 
-    <string name="title_activity_inbox">Inbox</string>
-
     <string name="app_notification_channel_default_name">360 General notifications</string>
     <string name="app_notification_channel_default_description">Default channel to display notifications</string>
+
+    <string name="campaign_error">Can\'t send the %s campaign at the moment. Please try again later</string>
 
     <string name="inbox_fab_inapp">Send InApp</string>
     <string name="inbox_fab_notification">Send notification</string>
     <string name="inbox_fab_inbox">Send inbox</string>
 
     <string name="general_placeholder">Loading</string>
-    <string name="general_settings">settings</string>
     <string name="general_select_all">select all</string>
     <string name="general_ok">OK</string>
     <string name="general_cancel">Cancel</string>
 
-    <string name="campaign_unable_to_send">Internal error occurred. Unable to send a campaign</string>
-    <string name="campaign_sending">Sending campaign</string>
-
-    <string name="inbox_service">Inbox Service</string>
     <string name="inbox_item_attachment_content_description">An inbox attachment image</string>
 
     <string name="inbox_filter_read_any">Any</string>
@@ -51,5 +46,4 @@
         <item quantity="few">%d messages selected</item>
         <item quantity="other">%d messages selected</item>
     </plurals>
-    <string name="inbox_send_sample_error">Can\'t send the Inbox Campaign at the moment. Please try again later</string>
 </resources>

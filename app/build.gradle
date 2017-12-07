@@ -16,10 +16,6 @@ android {
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
-
-//        vectorDrawables {
-//            useSupportLibrary = true
-//        }
     }
     buildTypes {
         release {
@@ -46,7 +42,7 @@ dependencies {
     implementation 'com.google.firebase:firebase-messaging:11.+'
 
     // ================= 360 dialog dependencies =================
-    implementation 'com.github.360dialog:sdk-android:3.8.1'
+    implementation 'com.github.360dialog:sdk-android:3.8.2'
     // Additional module to enable push notifications out of the box:
     implementation('com.github.360dialog:android-fcm-compat:3.8.1') {
         exclude group: 'com.google.firebase'
