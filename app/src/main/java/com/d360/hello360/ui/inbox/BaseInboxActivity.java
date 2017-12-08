@@ -54,7 +54,7 @@ public abstract class BaseInboxActivity extends AppCompatActivity {
                 mFabMenu.close(true);
                 try {
                     InApp inappCampaign = new InApp(getApplicationContext());
-                    Tester.getInstance().send(getApplicationContext(), inappCampaign);
+                    Tester.send(getApplicationContext(), inappCampaign);
                 } catch (CampaignException e) {
                     String message = getString(R.string.campaign_error, "InApp", e.getMessage());
                     Snackbar.make(coordinatorLayout, message, Snackbar.LENGTH_SHORT).show();
@@ -82,7 +82,7 @@ public abstract class BaseInboxActivity extends AppCompatActivity {
                             .allowNotificationWhenAppIsInForeground(true)
                             .setAction(openUrl)
                     ;
-                    Tester.getInstance().send(getApplicationContext(), notification);
+                    Tester.send(getApplicationContext(), notification);
                 } catch (CampaignException | JSONException e) {
                     String message = getString(R.string.campaign_error, "Notification", e.getMessage());
                     Snackbar.make(coordinatorLayout, message, Snackbar.LENGTH_SHORT).show();
@@ -104,7 +104,7 @@ public abstract class BaseInboxActivity extends AppCompatActivity {
                             .setAttachmentUrl("https://inapp-samples.s3.amazonaws.com/examples/JPG/desertsmall.jpg")
                             .setInboxAction(action)
                     ;
-                    Tester.getInstance().send(getApplicationContext(), inboxCampaign);
+                    Tester.send(getApplicationContext(), inboxCampaign);
                 } catch (CampaignException e) {
                     String message = getString(R.string.campaign_error, "Inbox", e.getMessage());
                     Snackbar.make(coordinatorLayout, message, Snackbar.LENGTH_SHORT).show();
