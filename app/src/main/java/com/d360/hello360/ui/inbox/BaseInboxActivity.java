@@ -7,6 +7,7 @@
 
 package com.d360.hello360.ui.inbox;
 
+import android.annotation.SuppressLint;
 import android.support.annotation.Nullable;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
@@ -34,7 +35,8 @@ import static com.d360.hello360.Hello360.TAG;
  * Stuff not related to the SDK integration.
  * We keep it in separate class to keep the integration code clean
  */
-public abstract class BaseInboxActivity extends AppCompatActivity {
+@SuppressLint("Registered")
+public class BaseInboxActivity extends AppCompatActivity {
 
     private FloatingActionMenu mFabMenu;
 
@@ -56,10 +58,7 @@ public abstract class BaseInboxActivity extends AppCompatActivity {
                     InApp inappCampaign = new InApp(getApplicationContext());
                     Tester.send(getApplicationContext(), inappCampaign);
                 } catch (CampaignException e) {
-                    String message = getString(R.string.campaign_error, "InApp", e.getMessage());
-                    Snackbar.make(coordinatorLayout, message, Snackbar.LENGTH_SHORT).show();
-                    Log.d(TAG, "Can't send the InApp campaign. Message: " + e.getMessage());
-                    e.printStackTrace();
+                    handleCampaignTesterError(coordinatorLayout, e, "InApp");
                 }
             }
         });
@@ -84,10 +83,7 @@ public abstract class BaseInboxActivity extends AppCompatActivity {
                     ;
                     Tester.send(getApplicationContext(), notification);
                 } catch (CampaignException | JSONException e) {
-                    String message = getString(R.string.campaign_error, "Notification", e.getMessage());
-                    Snackbar.make(coordinatorLayout, message, Snackbar.LENGTH_SHORT).show();
-                    Log.d(TAG, "Can't send the Notification campaign. Message: " + e.getMessage());
-                    e.printStackTrace();
+                    handleCampaignTesterError(coordinatorLayout, e, "Notification");
                 }
             }
         });
@@ -106,13 +102,20 @@ public abstract class BaseInboxActivity extends AppCompatActivity {
                     ;
                     Tester.send(getApplicationContext(), inboxCampaign);
                 } catch (CampaignException e) {
-                    String message = getString(R.string.campaign_error, "Inbox", e.getMessage());
-                    Snackbar.make(coordinatorLayout, message, Snackbar.LENGTH_SHORT).show();
-                    Log.d(TAG, "Can't send the Inbox campaign. Message: " + e.getMessage());
-                    e.printStackTrace();
+                    handleCampaignTesterError(coordinatorLayout, e, "Inbox");
                 }
             }
         });
+    }
+
+    private void handleCampaignTesterError(@Nullable CoordinatorLayout coordinatorLayout, Exception e, String campaignType) {
+        String message = getString(R.string.campaign_error, campaignType, e.getMessage());
+        Log.d(TAG, "Can't send the " + campaignType + " campaign. Message: " + e.getMessage());
+        e.printStackTrace();
+
+        if (coordinatorLayout != null) {
+            Snackbar.make(coordinatorLayout, message, Snackbar.LENGTH_SHORT).show();
+        }
     }
 
 }
