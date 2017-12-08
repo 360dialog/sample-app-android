@@ -56,7 +56,7 @@ public abstract class BaseInboxActivity extends AppCompatActivity {
                     InApp inappCampaign = new InApp(getApplicationContext());
                     Tester.getInstance().send(getApplicationContext(), inappCampaign);
                 } catch (CampaignException e) {
-                    String message = getString(R.string.campaign_error, "InApp");
+                    String message = getString(R.string.campaign_error, "InApp", e.getMessage());
                     Snackbar.make(coordinatorLayout, message, Snackbar.LENGTH_SHORT).show();
                     Log.d(TAG, "Can't send the InApp campaign. Message: " + e.getMessage());
                     e.printStackTrace();
@@ -84,7 +84,7 @@ public abstract class BaseInboxActivity extends AppCompatActivity {
                     ;
                     Tester.getInstance().send(getApplicationContext(), notification);
                 } catch (CampaignException | JSONException e) {
-                    String message = getString(R.string.campaign_error, "Notification");
+                    String message = getString(R.string.campaign_error, "Notification", e.getMessage());
                     Snackbar.make(coordinatorLayout, message, Snackbar.LENGTH_SHORT).show();
                     Log.d(TAG, "Can't send the Notification campaign. Message: " + e.getMessage());
                     e.printStackTrace();
@@ -106,7 +106,7 @@ public abstract class BaseInboxActivity extends AppCompatActivity {
                     ;
                     Tester.getInstance().send(getApplicationContext(), inboxCampaign);
                 } catch (CampaignException e) {
-                    String message = getString(R.string.campaign_error, "Inbox");
+                    String message = getString(R.string.campaign_error, "Inbox", e.getMessage());
                     Snackbar.make(coordinatorLayout, message, Snackbar.LENGTH_SHORT).show();
                     Log.d(TAG, "Can't send the Inbox campaign. Message: " + e.getMessage());
                     e.printStackTrace();
