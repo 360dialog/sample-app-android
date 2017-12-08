@@ -207,15 +207,15 @@ public class InboxActivity extends AppCompatActivity implements
             public void onClick(View view) {
                 mFabMenu.close(true);
                 try {
-                    InAppAction action = new InAppAction("", InAppAction.Button.DARK);
+                    InAppAction action = new InAppAction("https://inapp-samples.s3-eu-west-1.amazonaws.com/inapp-pagination.html", InAppAction.Button.DARK);
 
                     Inbox inboxCampaign = new Inbox(getApplicationContext());
                     inboxCampaign
                             .setAttachmentUrl("https://inapp-samples.s3.amazonaws.com/examples/JPG/desertsmall.jpg")
-                            .setAction(action)
+                            .setInboxAction(action)
                     ;
                     Tester.getInstance().send(getApplicationContext(), inboxCampaign);
-                } catch (CampaignException | JSONException e) {
+                } catch (CampaignException e) {
                     String message = getString(R.string.campaign_error, "Inbox");
                     Snackbar.make(mCoordinatorLayout, message, Snackbar.LENGTH_SHORT).show();
                     Log.d(TAG, "Can't send the Inbox campaign. Message: " + e.getMessage());
