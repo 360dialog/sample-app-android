@@ -12,12 +12,12 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.widget.CoordinatorLayout;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AlertDialog;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.util.SparseBooleanArray;
@@ -29,10 +29,8 @@ import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.RadioGroup;
-import android.widget.Toast;
 
 import com.d360.hello360.R;
-import com.d360.hello360.network.InboxAttachmentDownloader;
 import com.threesixtydialog.sdk.D360;
 import com.threesixtydialog.sdk.D360InboxFetchRequest;
 import com.threesixtydialog.sdk.D360InboxMessage;
@@ -43,24 +41,22 @@ import java.util.List;
 
 import static com.d360.hello360.Hello360.TAG;
 
-public class InboxActivity extends AppCompatActivity implements
+public class InboxActivity extends BaseInboxActivity implements
         D360InboxService.OnMessagesFetchListener,
         D360InboxService.OnMessageCompletionListener,
         AdapterView.OnItemClickListener,
         AbsListView.MultiChoiceModeListener {
 
     public static final String INBOX_ACTION_UPDATE = "update";
-    public static final String INBOX_ACTION_UPDATE_IMAGE = "update.image";
     public static final String INBOX_ACTION_REMOVE = "remove";
     public static final String INBOX_EXTRA_MESSAGE = "message";
     public static final String INBOX_EXTRA_MESSAGES = "messages";
-    public static final String INBOX_EXTRA_BITMAP = "bitmap";
-    public static final String INBOX_EXTRA_VIEW_HOLDER_ID = "viewholder.id";
 
     private ListView mListView;
     private InboxArrayAdapter mInboxArrayAdapter;
     private List<InboxMessageViewHolder> mMessages = new ArrayList<>();
     private ActionMode mActionMode = null;
+    private CoordinatorLayout mCoordinatorLayout;
 
     private RadioGroup mFilterReadGroup;
     private RadioGroup mFilterDeletedGroup;
@@ -75,8 +71,12 @@ public class InboxActivity extends AppCompatActivity implements
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_inbox);
 
+        mCoordinatorLayout = findViewById(R.id.coordinator_layout);
+
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+        setupFloatingActionButtons(mCoordinatorLayout);
 
         mFilterReadGroup = findViewById(R.id.filter_read_group);
         mFilterDeletedGroup = findViewById(R.id.filter_deleted_group);
@@ -103,7 +103,6 @@ public class InboxActivity extends AppCompatActivity implements
         IntentFilter intentFilter = new IntentFilter();
         intentFilter.addAction(INBOX_ACTION_UPDATE);
         intentFilter.addAction(INBOX_ACTION_REMOVE);
-        intentFilter.addAction(INBOX_ACTION_UPDATE_IMAGE);
         registerReceiver(mBroadcastReceiver, intentFilter);
     }
 
@@ -159,43 +158,6 @@ public class InboxActivity extends AppCompatActivity implements
 
             if (action.equals(INBOX_ACTION_UPDATE) || action.equals(INBOX_ACTION_REMOVE)) {
                 fetchInbox();
-            } else if (action.equals(INBOX_ACTION_UPDATE_IMAGE)) {
-                setBitmap(intent);
-            }
-        }
-
-        /**
-         * Set just downloaded bitmap attachment for InboxMessage
-         *
-         * @param intent Intent
-         */
-        public void setBitmap(Intent intent) {
-            byte[] rawBitmap = intent.getByteArrayExtra(INBOX_EXTRA_BITMAP);
-            String viewHolderId = intent.getStringExtra(INBOX_EXTRA_VIEW_HOLDER_ID);
-
-            InboxMessageViewHolder viewHolder = null;
-            for (InboxMessageViewHolder vh : mMessages) {
-                if (vh.getId().equals(viewHolderId)) {
-                    viewHolder = vh;
-                    break;
-                }
-            }
-
-            if (viewHolder == null) {
-                Log.d(TAG, "No view holder has been found");
-                return;
-            }
-
-            if (rawBitmap != null) {
-                Log.d(TAG, "Attachment for \"" +
-                        viewHolder.getInboxMessage().getTitle() +
-                        "\" downloaded. Applying!"
-                );
-                int offset = 0;
-                int length = rawBitmap.length;
-
-                viewHolder.setAttachmentBitmap(BitmapFactory.decodeByteArray(rawBitmap, offset, length));
-                mInboxArrayAdapter.notifyDataSetChanged();
             }
         }
     };
@@ -215,14 +177,6 @@ public class InboxActivity extends AppCompatActivity implements
         for (D360InboxMessage inboxMessage : list) {
             InboxMessageViewHolder message = new InboxMessageViewHolder(inboxMessage);
             mMessages.add(message);
-            // new DownloadImageTask(message, mInboxArrayAdapter).execute();
-
-            Intent intent = new Intent(this, InboxAttachmentDownloader.class);
-            intent.setAction(InboxAttachmentDownloader.ACTION);
-            intent.putExtra(INBOX_EXTRA_VIEW_HOLDER_ID, message.getId());
-            intent.putExtra(INBOX_EXTRA_MESSAGE, inboxMessage);
-
-            startService(intent);
         }
 
         // Reset view if there was selection made on the list
@@ -238,11 +192,14 @@ public class InboxActivity extends AppCompatActivity implements
 
     @Override
     public void onError() {
-        Toast.makeText(
-                this,
-                "Can't fetch the inbox now. Try again later",
-                Toast.LENGTH_SHORT
-        ).show();
+        Snackbar
+                .make(
+                        mCoordinatorLayout,
+                        "Can't fetch the inbox now. Try again later",
+                        Snackbar.LENGTH_SHORT
+                )
+                .show();
+
     }
 
     /*
@@ -274,14 +231,19 @@ public class InboxActivity extends AppCompatActivity implements
 
         if (message == null) return;
 
+        // Set message as read when it's clicked
+        D360.inbox().updateMessageAsRead(message, true, this);
+
         if (message.isExecutable()) {
             D360.inbox().executeMessage(message, this);
         } else {
-            Toast.makeText(
-                    this,
-                    "This message is not executable",
-                    Toast.LENGTH_SHORT
-            ).show();
+            Snackbar
+                    .make(
+                            mCoordinatorLayout,
+                            "This message is not executable",
+                            Snackbar.LENGTH_SHORT
+                    )
+                    .show();
         }
     }
 
@@ -333,22 +295,24 @@ public class InboxActivity extends AppCompatActivity implements
             }
         }
 
-        clearList();
-
         switch (item.getItemId()) {
             case R.id.inbox_item_menu_read:
+                clearList();
                 D360.inbox().updateMessagesAsRead(messages, true, this);
                 break;
 
             case R.id.inbox_item_menu_unread:
+                clearList();
                 D360.inbox().updateMessagesAsRead(messages, false, this);
                 break;
 
             case R.id.inbox_item_menu_delete:
+                clearList();
                 D360.inbox().updateMessagesAsDeleted(messages, true, this);
                 break;
 
             case R.id.inbox_item_menu_undelete:
+                clearList();
                 D360.inbox().updateMessagesAsDeleted(messages, false, this);
                 break;
 
@@ -359,6 +323,7 @@ public class InboxActivity extends AppCompatActivity implements
                         .setPositiveButton(R.string.general_ok, new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
+                                clearList();
                                 D360.inbox().removeMessages(messages, InboxActivity.this);
                             }
                         })
