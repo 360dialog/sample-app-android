@@ -18,7 +18,6 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AlertDialog;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.util.SparseBooleanArray;
@@ -31,30 +30,18 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.RadioGroup;
 
-import com.d360.campaigntester.CampaignException;
-import com.d360.campaigntester.Tester;
-import com.d360.campaigntester.campaign.InApp;
-import com.d360.campaigntester.campaign.Inbox;
-import com.d360.campaigntester.campaign.Notification;
-import com.d360.campaigntester.campaign.action.InAppAction;
-import com.d360.campaigntester.campaign.action.UrlAction;
-import com.d360.hello360.Hello360;
 import com.d360.hello360.R;
-import com.github.clans.fab.FloatingActionButton;
-import com.github.clans.fab.FloatingActionMenu;
 import com.threesixtydialog.sdk.D360;
 import com.threesixtydialog.sdk.D360InboxFetchRequest;
 import com.threesixtydialog.sdk.D360InboxMessage;
 import com.threesixtydialog.sdk.D360InboxService;
-
-import org.json.JSONException;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import static com.d360.hello360.Hello360.TAG;
 
-public class InboxActivity extends AppCompatActivity implements
+public class InboxActivity extends BaseInboxActivity implements
         D360InboxService.OnMessagesFetchListener,
         D360InboxService.OnMessageCompletionListener,
         AdapterView.OnItemClickListener,
@@ -74,8 +61,6 @@ public class InboxActivity extends AppCompatActivity implements
     private RadioGroup mFilterReadGroup;
     private RadioGroup mFilterDeletedGroup;
 
-    private FloatingActionMenu mFabMenu;
-
     /**
      * Start with default filter set
      */
@@ -91,7 +76,7 @@ public class InboxActivity extends AppCompatActivity implements
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        setupFloatingActionButtons();
+        setupFloatingActionButtons(mCoordinatorLayout);
 
         mFilterReadGroup = findViewById(R.id.filter_read_group);
         mFilterDeletedGroup = findViewById(R.id.filter_deleted_group);
@@ -146,83 +131,6 @@ public class InboxActivity extends AppCompatActivity implements
         }
 
         return super.onOptionsItemSelected(item);
-    }
-
-    /**
-     * Floating action menu and it's buttons setup
-     */
-    private void setupFloatingActionButtons() {
-        FloatingActionButton fabInapp = findViewById(R.id.fab_inapp);
-        FloatingActionButton fabInbox = findViewById(R.id.fab_inbox);
-        FloatingActionButton fabNotification = findViewById(R.id.fab_notification);
-
-        mFabMenu = findViewById(R.id.fab_menu);
-
-        fabInapp.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                mFabMenu.close(true);
-                try {
-                    InApp inappCampaign = new InApp(getApplicationContext());
-                    Tester.getInstance().send(getApplicationContext(), inappCampaign);
-                } catch (CampaignException e) {
-                    String message = getString(R.string.campaign_error, "InApp");
-                    Snackbar.make(mCoordinatorLayout, message, Snackbar.LENGTH_SHORT).show();
-                    Log.d(TAG, "Can't send the InApp campaign. Message: " + e.getMessage());
-                    e.printStackTrace();
-                }
-            }
-        });
-
-        fabNotification.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                mFabMenu.close(true);
-                try {
-                    UrlAction openUrl = new UrlAction("http://www.google.com/search?q=macarons");
-
-                    Notification notification = new Notification();
-                    notification
-                            .setChannelId(Hello360.NOTIFICATION_CHANNEL_DEFAULT)
-                            .setTitle("Hi 👋")
-                            .setBody("Tap to open a URL")
-                            .setLargeIconUrl("https://inapp-samples.s3.amazonaws.com/examples/JPG/desertsmall.jpg")
-                            .setBigPictureUrl("http://1.bp.blogspot.com/-VWYdCzYXGjo/VazZ_-DFAGI/AAAAAAAAEx0/ZJd4csDslPQ/s1600/20150720_094211%2528edited%2529.jpg")
-                            .setRichText("Tap to open a URL")
-                            .allowNotificationWhenAppIsInForeground(true)
-                            .setAction(openUrl)
-                    ;
-                    Tester.getInstance().send(getApplicationContext(), notification);
-                } catch (CampaignException | JSONException e) {
-                    String message = getString(R.string.campaign_error, "Notification");
-                    Snackbar.make(mCoordinatorLayout, message, Snackbar.LENGTH_SHORT).show();
-                    Log.d(TAG, "Can't send the Notification campaign. Message: " + e.getMessage());
-                    e.printStackTrace();
-                }
-            }
-        });
-
-        fabInbox.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                mFabMenu.close(true);
-                try {
-                    InAppAction action = new InAppAction("https://inapp-samples.s3-eu-west-1.amazonaws.com/inapp-pagination.html", InAppAction.Button.DARK);
-
-                    Inbox inboxCampaign = new Inbox(getApplicationContext());
-                    inboxCampaign
-                            .setAttachmentUrl("https://inapp-samples.s3.amazonaws.com/examples/JPG/desertsmall.jpg")
-                            .setInboxAction(action)
-                    ;
-                    Tester.getInstance().send(getApplicationContext(), inboxCampaign);
-                } catch (CampaignException e) {
-                    String message = getString(R.string.campaign_error, "Inbox");
-                    Snackbar.make(mCoordinatorLayout, message, Snackbar.LENGTH_SHORT).show();
-                    Log.d(TAG, "Can't send the Inbox campaign. Message: " + e.getMessage());
-                    e.printStackTrace();
-                }
-            }
-        });
     }
 
     protected void fetchInbox() {
