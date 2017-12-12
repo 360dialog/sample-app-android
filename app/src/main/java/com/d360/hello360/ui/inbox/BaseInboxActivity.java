@@ -61,9 +61,9 @@ public class BaseInboxActivity extends AppCompatActivity {
         In case of Activity having `android:launchMode="singleTask"`, it is required to add deeplink
         tracking in `onNewIntent()` method to make sure that deeplinks will be tracked correctly
          */
-        if (isDeeplink(intent)) {
+        if (intent != null && intent.getData() != null) {
             //noinspection ConstantConditions
-            D360.urls().reportDeepLinkOpened(intent.getDataString());
+            D360.urls().reportDeepLinkOpened(intent.getData().toString());
         }
     }
 
