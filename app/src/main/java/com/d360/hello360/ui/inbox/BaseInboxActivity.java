@@ -8,9 +8,11 @@
 package com.d360.hello360.ui.inbox;
 
 import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.support.annotation.Nullable;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
@@ -38,7 +40,39 @@ import static com.d360.hello360.Hello360.TAG;
 @SuppressLint("Registered")
 public class BaseInboxActivity extends AppCompatActivity {
 
+    public static final String DEEPLINK_SCHEME = "360sampleapp";
+
     private FloatingActionMenu mFabMenu;
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        handleDeeplink(getIntent());
+    }
+
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        // Notify user that the app was opened by a deeplink
+        handleDeeplink(intent);
+    }
+
+    /**
+     * Handle a deeplink: show alert with current deeplink
+     *
+     * @param intent An intent
+     */
+    private void handleDeeplink(Intent intent) {
+        if (intent != null && intent.getData() != null && intent.getData().getScheme().equals(DEEPLINK_SCHEME)) {
+            AlertDialog dialog = new AlertDialog.Builder(this)
+                    .setTitle(R.string.app_link_dialog_title)
+                    .setMessage(getString(R.string.app_link_dialog_message, intent.getData().toString()))
+                    .setPositiveButton(R.string.general_ok, null)
+                    .create();
+
+            dialog.show();
+        }
+    }
 
     /**
      * Floating action menu and it's buttons setup
@@ -55,7 +89,7 @@ public class BaseInboxActivity extends AppCompatActivity {
             public void onClick(View view) {
                 mFabMenu.close(true);
                 try {
-                    InApp inappCampaign = new InApp(getApplicationContext());
+                    InApp inappCampaign = new InApp("https://inapp-samples.s3-eu-west-1.amazonaws.com/sample-inapp-pagination.html");
                     Tester.send(getApplicationContext(), inappCampaign);
                 } catch (CampaignException e) {
                     handleCampaignTesterError(coordinatorLayout, e, "InApp");
@@ -93,7 +127,7 @@ public class BaseInboxActivity extends AppCompatActivity {
             public void onClick(View view) {
                 mFabMenu.close(true);
                 try {
-                    InAppAction action = new InAppAction("https://inapp-samples.s3-eu-west-1.amazonaws.com/inapp-pagination.html", InAppAction.Button.DARK);
+                    InAppAction action = new InAppAction("https://inapp-samples.s3-eu-west-1.amazonaws.com/sample-inapp-pagination.html", InAppAction.Button.DARK);
 
                     Inbox inboxCampaign = new Inbox(getApplicationContext());
                     inboxCampaign

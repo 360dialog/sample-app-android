@@ -11,6 +11,9 @@
     <string name="app_notification_channel_default_name">360 General notifications</string>
     <string name="app_notification_channel_default_description">Default channel to display notifications</string>
 
+    <string name="app_link_dialog_title">Deeplink received</string>
+    <string name="app_link_dialog_message">Deeplink: %s</string>
+
     <string name="campaign_error">Can\'t send the %s campaign at the moment. Received a message: %s</string>
 
     <string name="inbox_fab_inapp">Send InApp</string>
