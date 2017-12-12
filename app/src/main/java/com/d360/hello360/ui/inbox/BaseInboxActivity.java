@@ -28,6 +28,7 @@ import com.d360.hello360.Hello360;
 import com.d360.hello360.R;
 import com.github.clans.fab.FloatingActionButton;
 import com.github.clans.fab.FloatingActionMenu;
+import com.threesixtydialog.sdk.D360;
 
 import org.json.JSONException;
 
@@ -55,6 +56,15 @@ public class BaseInboxActivity extends AppCompatActivity {
         super.onNewIntent(intent);
         // Notify user that the app was opened by a deeplink
         handleDeeplink(intent);
+
+        /*
+        In case of Activity having `android:launchMode="singleTask"`, it is required to add deeplink
+        tracking in `onNewIntent()` method to make sure that deeplinks will be tracked correctly
+         */
+        if (isDeeplink(intent)) {
+            //noinspection ConstantConditions
+            D360.urls().reportDeepLinkOpened(intent.getDataString());
+        }
     }
 
     /**
@@ -63,7 +73,8 @@ public class BaseInboxActivity extends AppCompatActivity {
      * @param intent An intent
      */
     private void handleDeeplink(Intent intent) {
-        if (intent != null && intent.getData() != null && intent.getData().getScheme().equals(DEEPLINK_SCHEME)) {
+        if (isDeeplink(intent)) {
+            //noinspection ConstantConditions
             AlertDialog dialog = new AlertDialog.Builder(this)
                     .setTitle(R.string.app_link_dialog_title)
                     .setMessage(getString(R.string.app_link_dialog_message, intent.getData().toString()))
@@ -72,6 +83,12 @@ public class BaseInboxActivity extends AppCompatActivity {
 
             dialog.show();
         }
+    }
+
+    private boolean isDeeplink(Intent intent) {
+        return intent != null &&
+                intent.getData() != null &&
+                intent.getData().getScheme().equals(DEEPLINK_SCHEME);
     }
 
     /**
